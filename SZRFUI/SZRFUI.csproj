@@ -37,6 +37,9 @@
   <PropertyGroup>
     <ApplicationIcon>iconfinder_2018_social_media_popular_app_logo_youtube_3225180.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.3.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.3.1\lib\BouncyCastle.Crypto.dll</HintPath>
@@ -275,6 +278,7 @@
     <Compile Include="Models\H3U.cs" />
     <Compile Include="Models\Inifile.cs" />
     <Compile Include="Models\IPLCCommunication.cs" />
+    <Compile Include="Models\Metro.cs" />
     <Compile Include="Models\Mysql.cs" />
     <Compile Include="Models\TCP.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -320,6 +324,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

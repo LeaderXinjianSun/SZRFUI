@@ -9,7 +9,7 @@
         xmlns:local="clr-namespace:SZRFUI"
         xmlns:Views="clr-namespace:SZRFUI.Views"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="691" Width="1024" WindowStartupLocation ="CenterScreen" ResizeMode="CanResize">
+        Title="{Binding WindowTitle}" Height="691" Width="1024" WindowStartupLocation ="CenterScreen" ResizeMode="CanResize" Closing="MetroWindow_Closing">
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
             <Button ToolTip="Have a good day">

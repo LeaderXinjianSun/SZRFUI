@@ -27,5 +27,21 @@ namespace SZRFUI
             InitializeComponent();
             this.DataContext = new MainWindowViewModel();
         }
+
+        private async void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            SZRFUI.Models.Metro metro = new Models.Metro();
+            metro.ChangeAccent("Dark.Red");
+            bool r = await metro.ShowConfirm("确认", "你确定关闭软件吗?");
+            if (!r)
+            {
+                metro.ChangeAccent("Light.Blue");
+            }
+            else
+            {
+                System.Windows.Application.Current.Shutdown();
+            }
+        }
     }
 }
