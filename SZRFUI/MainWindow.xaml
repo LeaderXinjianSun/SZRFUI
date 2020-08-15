@@ -1,12 +1,72 @@
-﻿<Window x:Class="SZRFUI.MainWindow"
+﻿<mah:MetroWindow x:Class="SZRFUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:local="clr-namespace:SZRFUI"
+        xmlns:Views="clr-namespace:SZRFUI.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="{Binding WindowTitle}" Height="691" Width="1024" WindowStartupLocation ="CenterScreen" ResizeMode="CanResize">
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <Button ToolTip="Have a good day">
+                <iconPacks:PackIconModern Width="22"
+                                  Height="22"
+                                  Kind="SocialGithubOctocat" />
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+    <mah:MetroWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Views\Dictionary1.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </mah:MetroWindow.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding AppLoadedEventCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closed">
+            <i:InvokeCommandAction Command="{Binding AppClosedEventCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu VerticalAlignment="Center">
+            <MenuItem Header="主页" Command="{Binding MenuActionCommand}" CommandParameter="0"></MenuItem>
+            <MenuItem Header="参数" Command="{Binding MenuActionCommand}" CommandParameter="1"></MenuItem>
+        </Menu>
+        <Views:HomePage Grid.Row="1"></Views:HomePage>
+        <StatusBar Grid.Row="2">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center">PLC</TextBlock>
+                    <Ellipse Style="{StaticResource EllipseStatusPLC}"></Ellipse>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center">Robot</TextBlock>
+                    <Ellipse Style="{StaticResource EllipseStatusRobot}"></Ellipse>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center">治具</TextBlock>
+                    <Ellipse Style="{StaticResource EllipseStatusTester}"></Ellipse>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding Cycle,StringFormat=Cycle:{0}ms}"></TextBlock>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
-</Window>
+</mah:MetroWindow>
