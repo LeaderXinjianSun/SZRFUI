@@ -7,6 +7,13 @@
              xmlns:local="clr-namespace:SZRFUI.Views"
              mc:Ignorable="d" 
              d:DesignHeight="631" d:DesignWidth="1024">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Dictionary1.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"></RowDefinition>
@@ -33,11 +40,48 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Margin="10" Command="{Binding FuncCommand}">
-                <iconPacks:PackIconModern Width="42"
-                                  Height="42"
-                                  Kind="Tools" />
-            </Button>
+            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Content="启动" FontSize="22" Margin="10" Command="{Binding EpsonOperateCommand}" CommandParameter="0"></Button>
+            <Button Grid.Column="1" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Content="停止" FontSize="22" Margin="10" Command="{Binding EpsonOperateCommand}" CommandParameter="1"></Button>
+            <Button Grid.Column="2" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Content="继续" FontSize="22" Margin="10" Command="{Binding EpsonOperateCommand}" CommandParameter="2"></Button>
+            <Button Grid.Row="1" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Content="重启" FontSize="22" Margin="10" Command="{Binding EpsonOperateCommand}" CommandParameter="3"></Button>
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="4">
+                <StackPanel Style="{StaticResource EpsonStatusStackPanel}">
+                    <TextBlock Style="{StaticResource EpsonStatusTextBlock}" Text="自动" ></TextBlock>
+                    <Ellipse Style="{StaticResource EpsonStatusAutoColor}"></Ellipse>
+                </StackPanel>
+                <StackPanel Style="{StaticResource EpsonStatusStackPanel}">
+                    <TextBlock Style="{StaticResource EpsonStatusTextBlock}" Text="警告" ></TextBlock>
+                    <Ellipse Style="{StaticResource EpsonStatusWarningColor}"></Ellipse>
+                </StackPanel>
+                <StackPanel Style="{StaticResource EpsonStatusStackPanel}">
+                    <TextBlock Style="{StaticResource EpsonStatusTextBlock}" Text="错误" ></TextBlock>
+                    <Ellipse Style="{StaticResource EpsonStatusSErrorColor}"></Ellipse>
+                </StackPanel>
+                <StackPanel Style="{StaticResource EpsonStatusStackPanel}">
+                    <TextBlock Style="{StaticResource EpsonStatusTextBlock}" Text="门" ></TextBlock>
+                    <Ellipse Style="{StaticResource EpsonStatusSafeGuardColor}"></Ellipse>
+                </StackPanel>
+                <StackPanel Style="{StaticResource EpsonStatusStackPanel}">
+                    <TextBlock Style="{StaticResource EpsonStatusTextBlock}" Text="停止" ></TextBlock>
+                    <Ellipse Style="{StaticResource EpsonStatusEStopColor}"></Ellipse>
+                </StackPanel>
+                <StackPanel Style="{StaticResource EpsonStatusStackPanel}">
+                    <TextBlock Style="{StaticResource EpsonStatusTextBlock}" Text="异常" ></TextBlock>
+                    <Ellipse Style="{StaticResource EpsonStatusErrorColor}"></Ellipse>
+                </StackPanel>
+                <StackPanel Style="{StaticResource EpsonStatusStackPanel}">
+                    <TextBlock Style="{StaticResource EpsonStatusTextBlock}" Text="暂停" ></TextBlock>
+                    <Ellipse Style="{StaticResource EpsonStatusPausedColor}"></Ellipse>
+                </StackPanel>
+                <StackPanel Style="{StaticResource EpsonStatusStackPanel}">
+                    <TextBlock Style="{StaticResource EpsonStatusTextBlock}" Text="运行" ></TextBlock>
+                    <Ellipse Style="{StaticResource EpsonStatusRunningColor}"></Ellipse>
+                </StackPanel>
+                <StackPanel Style="{StaticResource EpsonStatusStackPanel}">
+                    <TextBlock Style="{StaticResource EpsonStatusTextBlock}" Text="准备" ></TextBlock>
+                    <Ellipse Style="{StaticResource EpsonStatusReadyColor}"></Ellipse>
+                </StackPanel>
+            </StackPanel>
         </Grid>
         <TextBox Grid.Row="1" VerticalAlignment="Stretch" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" Margin="1" x:Name="MsgTextBox" IsReadOnly="True" TextChanged="MsgTextBox_TextChanged"  FontSize="14" Background="Black" FontFamily="宋体" Foreground="White" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding MessageStr}"></TextBox>
     </Grid>

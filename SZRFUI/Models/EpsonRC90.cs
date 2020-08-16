@@ -8,6 +8,8 @@ namespace SZRFUI.Models
 {
     public class EpsonRC90
     {
+        public delegate void PrintEventHandler(object sender, string ModelMessageStr);
+        public event PrintEventHandler EpsonStatusUpdate;
         public event EventHandler<bool> ConnectStateChanged;
         private bool mConnect = false;
         private bool _Connect
@@ -23,13 +25,16 @@ namespace SZRFUI.Models
             }
         }
         public TcpIpClient IOReceiveNet;
+        public TcpIpClient CtrlNet;
         public string IP { get; set; }
         public int PORT { get; set; }
         public bool[] Rc90In;//从机械手读出
         public bool[] Rc90Out;//向机械手写入
+        bool isLogined = false;
         public EpsonRC90(string ip,int port)
         {
             IOReceiveNet = new TcpIpClient();
+            CtrlNet = new TcpIpClient();
             Rc90In = new bool[50];
             Rc90Out = new bool[50];
             IP = ip;
@@ -115,6 +120,67 @@ namespace SZRFUI.Models
                     }
                 }
                 catch { }
+            }
+        }
+        public async void checkCtrlNet()
+        {
+            while (true)
+            {
+
+                if (!CtrlNet.tcpConnected)
+                {
+                    await Task.Delay(1000);
+                    if (!CtrlNet.tcpConnected)
+                    {
+                        isLogined = false;
+                        bool r1 = await CtrlNet.Connect(IP, 5000);
+                        if (r1)
+                        {
+                            _Connect = true;
+                        }
+                        else
+                            _Connect = false;
+                    }
+                }
+                if (!isLogined && _Connect)
+                {
+                    await CtrlNet.SendAsync("$login,123");
+                    string s = await CtrlNet.ReceiveAsync();
+                    if (s.Contains("#login,0"))
+                        isLogined = true;
+                    await Task.Delay(400);
+                }
+                else
+                {
+                    await Task.Delay(3000);
+                }
+            }
+        }
+        public async void GetStatus()
+        {
+            string status = "";
+            while (true)
+            {
+                if (isLogined == true)
+                {
+                    try
+                    {
+                        status = await CtrlNet.SendAndReceive("$getstatus");
+                        string[] statuss = status.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                        if (statuss[0] == "#getstatus")
+                        {
+                            if (statuss[1].Length == 11)
+                            {
+                                EpsonStatusUpdate(null, statuss[1]);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //Log.Default.Error("EpsonRC90.GetStatus", ex.Message);
+                    }
+                }
+                await Task.Delay(1000);
             }
         }
     }

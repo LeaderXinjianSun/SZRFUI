@@ -27,4 +27,84 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style TargetType="StackPanel" x:Key="EpsonStatusStackPanel">
+        <Setter Property="Margin" Value="2,0"></Setter>
+        <Setter Property="Orientation" Value="Vertical"></Setter>
+        <Setter Property="Width" Value="33"></Setter>
+    </Style>
+    <Style TargetType="TextBlock" x:Key="EpsonStatusTextBlock">
+        <Setter Property="FontSize" Value="16"></Setter>
+        <Setter Property="FontFamily" Value="宋体"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        <Setter Property="Margin" Value="1"></Setter>
+    </Style>
+    <Style TargetType="Ellipse" x:Key="EpsonEllipseBase">
+        <Setter Property="Height" Value="20" ></Setter>
+        <Setter Property="Width" Value="20" ></Setter>
+        <Setter Property="Fill" Value="Gray"></Setter>
+        <Setter Property="Margin" Value="0,5"></Setter>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EpsonEllipseBase}" x:Key="EpsonStatusAutoColor">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding EpsonStatusAuto}" Value="true">
+                <Setter Property="Fill" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource  EpsonEllipseBase}" x:Key="EpsonStatusWarningColor">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding EpsonStatusWarning}" Value="true">
+                <Setter Property="Fill" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EpsonEllipseBase}" x:Key="EpsonStatusSErrorColor">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding EpsonStatusSError}" Value="true">
+                <Setter Property="Fill" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EpsonEllipseBase}" x:Key="EpsonStatusSafeGuardColor">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding EpsonStatusSafeGuard}" Value="true">
+                <Setter Property="Fill" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EpsonEllipseBase}" x:Key="EpsonStatusEStopColor">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding EpsonStatusEStop}" Value="true">
+                <Setter Property="Fill" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EpsonEllipseBase}" x:Key="EpsonStatusErrorColor">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding EpsonStatusError}" Value="true">
+                <Setter Property="Fill" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EpsonEllipseBase}" x:Key="EpsonStatusPausedColor">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding EpsonStatusPaused}" Value="true">
+                <Setter Property="Fill" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EpsonEllipseBase}" x:Key="EpsonStatusRunningColor">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding EpsonStatusRunning}" Value="true">
+                <Setter Property="Fill" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EpsonEllipseBase}" x:Key="EpsonStatusReadyColor">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding EpsonStatusReady}" Value="true">
+                <Setter Property="Fill" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
