@@ -30,8 +30,8 @@ namespace SZRFUI.Models
         public EpsonRC90(string ip,int port)
         {
             IOReceiveNet = new TcpIpClient();
-            Rc90In = new bool[100];
-            Rc90Out = new bool[100];
+            Rc90In = new bool[50];
+            Rc90Out = new bool[50];
             IP = ip;
             PORT = port;
         }
@@ -91,14 +91,14 @@ namespace SZRFUI.Models
                         else
                         {
                             string[] strs = s.Split(',');
-                            if (strs[0] == "IOCMD" && strs[1].Length == 100)
+                            if (strs[0] == "IOCMD" && strs[1].Length == 50)
                             {
-                                for (int i = 0; i < 100; i++)
+                                for (int i = 0; i < 50; i++)
                                 {
                                     Rc90In[i] = strs[1][i] == '1' ? true : false;
                                 }
                                 string RsedStr = "";
-                                for (int i = 0; i < 100; i++)
+                                for (int i = 0; i < 50; i++)
                                 {
                                     RsedStr += Rc90Out[i] ? "1" : "0";
                                 }

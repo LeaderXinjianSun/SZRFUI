@@ -97,7 +97,7 @@ namespace SZRFUI.ViewModels
         H3U h3u;
         EpsonRC90 epsonRC90;
         string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
-        bool[] M2300;
+        bool[] M3000;
         #endregion
         #region 构造函数
         public MainWindowViewModel()
@@ -123,7 +123,7 @@ namespace SZRFUI.ViewModels
             AppClosedEventCommand = new DelegateCommand(new Action(this.AppClosedEventCommandExecute));
             MenuActionCommand = new DelegateCommand<object>(new Action<object>(this.MenuActionCommandExecute));
             FuncCommand = new DelegateCommand(new Action(this.FuncCommandExecute));
-            if (System.Environment.CurrentDirectory == @"C:\Debug")
+            if (System.Environment.CurrentDirectory != @"C:\Debug")
             {
                 System.Windows.MessageBox.Show("软件安装目录必须为C:\\Debug", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 System.Windows.Application.Current.Shutdown();
@@ -143,7 +143,7 @@ namespace SZRFUI.ViewModels
         private void TcpServer_Received(object sender, string e)
         {
             string restr = e.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[0];
-            AddMessage(restr);
+            AddMessage("接收:" + restr);
             try
             {
                 string[] strs = restr.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
@@ -164,17 +164,7 @@ namespace SZRFUI.ViewModels
                         {
                             switch (strs1[1])
                             {
-                                case "1"://A
-                                    if (strs1[0] == "0")
-                                    {
-                                        h3u.SetM("M3102", true);
-                                    }
-                                    else
-                                    {
-                                        h3u.SetM("M3104", true);
-                                    }
-                                    break;
-                                case "2"://B
+                                case "1"://B
                                     if (strs1[0] == "0")
                                     {
                                         h3u.SetM("M3103", true);
@@ -182,6 +172,16 @@ namespace SZRFUI.ViewModels
                                     else
                                     {
                                         h3u.SetM("M3105", true);
+                                    }
+                                    break;
+                                case "2"://A                                  
+                                    if (strs1[0] == "0")
+                                    {
+                                        h3u.SetM("M3102", true);
+                                    }
+                                    else
+                                    {
+                                        h3u.SetM("M3104", true);
                                     }
                                     break;
                                 default:
@@ -208,40 +208,23 @@ namespace SZRFUI.ViewModels
                         h3u.SetM("M3116", true);
                         break;
                     case "Reset"://重启完成
-                        h3u.SetM("M3110", true);
+                        switch (strs[1])
+                        {
+                            case "1":
+                                h3u.SetM("M3110", true);
+                                break;
+                            case "2":
+                                h3u.SetM("M3111", true);
+                                break;
+                            default:
+                                break;
+                        }
                         break;
                     case "Alarm":
                         string[] strs4 = strs[1].Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
                         switch (strs4[1])
                         {
-                            case "1"://A
-                                switch (strs4[0])
-                                {
-                                    case "1"://真空报警
-                                        AddMessage("A真空报警");
-                                        h3u.SetM("M3106", true);
-                                        break;
-                                    case "2"://连续3次NG报警
-                                        AddMessage("A连续3次NG报警");
-                                        break;
-                                    case "3"://气缸下到位NG
-                                        AddMessage("A气缸下到位NG");
-                                        break;
-                                    case "4"://气缸上到位NG
-                                        AddMessage("A气缸上到位NG");
-                                        break;
-                                    case "5"://光纤叠料
-                                        AddMessage("A光纤叠料");
-                                        h3u.SetM("M3108", true);
-                                        break;
-                                    case "6"://上位料掉料
-                                        AddMessage("A上位料掉料");
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                break;
-                            case "2"://B
+                            case "1"://B
                                 switch (strs4[0])
                                 {
                                     case "1"://真空报警
@@ -263,6 +246,33 @@ namespace SZRFUI.ViewModels
                                         break;
                                     case "6"://上位料掉料
                                         AddMessage("B上位料掉料");
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+                            case "2"://A                                
+                                switch (strs4[0])
+                                {
+                                    case "1"://真空报警
+                                        AddMessage("A真空报警");
+                                        h3u.SetM("M3106", true);
+                                        break;
+                                    case "2"://连续3次NG报警
+                                        AddMessage("A连续3次NG报警");
+                                        break;
+                                    case "3"://气缸下到位NG
+                                        AddMessage("A气缸下到位NG");
+                                        break;
+                                    case "4"://气缸上到位NG
+                                        AddMessage("A气缸上到位NG");
+                                        break;
+                                    case "5"://光纤叠料
+                                        AddMessage("A光纤叠料");
+                                        h3u.SetM("M3108", true);
+                                        break;
+                                    case "6"://上位料掉料
+                                        AddMessage("A上位料掉料");
                                         break;
                                     default:
                                         break;
@@ -353,34 +363,42 @@ namespace SZRFUI.ViewModels
                     #region 互刷
                     if (StatusPLC && StatusRobot)
                     {
-                        M2300 = h3u.ReadMultiM("M2300", 100);
-                        for (int i = 0; i < M2300.Length; i++)
+                        M3000 = h3u.ReadMultiM("M3000", 50);
+                        for (int i = 0; i < M3000.Length; i++)
                         {
-                            epsonRC90.Rc90Out[i] = M2300[i];
+                            epsonRC90.Rc90Out[i] = M3000[i];
                         }
-                        h3u.SetMultiM("M2200", epsonRC90.Rc90In);
-                        System.Threading.Thread.Sleep(50);
+                        h3u.SetMultiM("M3050", epsonRC90.Rc90In);
+                        System.Threading.Thread.Sleep(20);
                     }
                     else
                     {
                         System.Threading.Thread.Sleep(1000);
                     }
                     #endregion
-                    #region 与测试机交互
+                    #region 与测试机交互                    
                     if (StatusPLC)
                     {
-                        if (h3u.ReadM("M3152"))
+                        bool[] M3150 = h3u.ReadMultiM("M3150", 24);
+                        if (M3150[2])
                         {
                             Socket socket = tcpServer.SocketList.FirstOrDefault();
-                            AddMessage(@"Unload,0:1/0:2");
-                            string str = tcpServer.TCPSend(socket, @"Unload,0:1/0:2" + "\r\n", false);
+                            AddMessage(@"Unload,0:1");
+                            string str = tcpServer.TCPSend(socket, @"Unload,0:1" + "\r\n", false);
+                            if (str != "")
+                            {
+                                AddMessage(str);
+                            }
+                            AddMessage(@"Unload,0:2");
+                            str = tcpServer.TCPSend(socket, @"Unload,0:2" + "\r\n", false);
                             if (str != "")
                             {
                                 AddMessage(str);
                             }
                             h3u.SetM("M3152", false);
                         }
-                        if (h3u.ReadM("M3153"))//复位
+                        
+                        if (M3150[3])//复位
                         {
                             Socket socket = tcpServer.SocketList.FirstOrDefault();
                             AddMessage(@"Reboot");
@@ -391,18 +409,38 @@ namespace SZRFUI.ViewModels
                             }
                             h3u.SetM("M3153", false);
                         }
-                        if (h3u.ReadM("M3170"))//放完成
+                        
+                        if (M3150[4])//重启
                         {
                             Socket socket = tcpServer.SocketList.FirstOrDefault();
-                            AddMessage(@"Feed,1:1/1:2");
-                            string str = tcpServer.TCPSend(socket, @"Feed,1:1/1:2" + "\r\n", false);
+                            AddMessage(@"Reset,0");
+                            string str = tcpServer.TCPSend(socket, @"Reset,0" + "\r\n", false);
+                            if (str != "")
+                            {
+                                AddMessage(str);
+                            }
+                            h3u.SetM("M3154", false);
+                        }
+                        
+                        if (M3150[20])//放完成
+                        {
+                            Socket socket = tcpServer.SocketList.FirstOrDefault();
+                            AddMessage(@"Feed,1:1");
+                            string str = tcpServer.TCPSend(socket, @"Feed,1:1" + "\r\n", false);
+                            if (str != "")
+                            {
+                                AddMessage(str);
+                            }
+                            AddMessage(@"Feed,1:2");
+                            str = tcpServer.TCPSend(socket, @"Feed,1:2" + "\r\n", false);
                             if (str != "")
                             {
                                 AddMessage(str);
                             }
                             h3u.SetM("M3170", false);
                         }
-                        bool m3171 = h3u.ReadM("M3171");//开始放入样本产品
+                        
+                        bool m3171 = M3150[21];//开始放入样本产品
                         if (M3171 != m3171)
                         {
                             M3171 = m3171;
@@ -417,7 +455,8 @@ namespace SZRFUI.ViewModels
                                 }
                             }
                         }
-                        if (h3u.ReadM("M3172"))//样本上料结束
+                        
+                        if (M3150[22])//样本上料结束
                         {
                             Socket socket = tcpServer.SocketList.FirstOrDefault();
                             AddMessage(@"Sample,2");
@@ -428,6 +467,7 @@ namespace SZRFUI.ViewModels
                             }
                             h3u.SetM("M3172", false);
                         }
+                        
                     }
                     #endregion
                 }
