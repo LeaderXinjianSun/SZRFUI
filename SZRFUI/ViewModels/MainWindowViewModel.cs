@@ -267,7 +267,7 @@ namespace SZRFUI.ViewModels
             AlarmReportFromExportCommand = new DelegateCommand(new Action(this.AlarmReportFromExportCommandExecute));
             FuncCommand = new DelegateCommand(new Action(this.FuncCommandExecute));
 
-            if (System.Environment.CurrentDirectory == @"C:\Debug")
+            if (System.Environment.CurrentDirectory != @"C:\Debug")
             {
                 System.Windows.MessageBox.Show("软件安装目录必须为C:\\Debug", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 System.Windows.Application.Current.Shutdown();
@@ -297,6 +297,13 @@ namespace SZRFUI.ViewModels
                 EpsonStatusPaused = str[8] == '1';
                 EpsonStatusRunning = str[9] == '1';
                 EpsonStatusReady = str[10] == '1';
+
+                bool[] robotStatus = new bool[] { EpsonStatusAuto, EpsonStatusWarning, EpsonStatusSError, EpsonStatusSafeGuard,
+                        EpsonStatusEStop,EpsonStatusError,EpsonStatusPaused,EpsonStatusRunning,EpsonStatusReady};
+                if (StatusPLC)
+                {
+                    fx5u.SetMultiM("M405", robotStatus);
+                }
             }
             catch { }
         }
@@ -363,7 +370,7 @@ namespace SZRFUI.ViewModels
                        
                         break;
                     case "Sample"://开始样本测试
-                        fx5u.SetM("M2516", true);
+                        fx5u.SetM("M2510", true);
                         break;
                     case "Feed"://允许放料
                         fx5u.SetM("M2501", true);
@@ -390,27 +397,27 @@ namespace SZRFUI.ViewModels
                                 {
                                     case "1"://真空报警
                                         AddMessage("B真空报警");
-                                        fx5u.SetM("M2526", true);
+                                        fx5u.SetM("M2536", true);
                                         break;
                                     case "2"://连续3次NG报警
                                         AddMessage("B连续3次NG报警");
-                                        fx5u.SetM("M2527", true);
+                                        fx5u.SetM("M2537", true);
                                         break;
                                     case "3"://气缸下到位NG
                                         AddMessage("B气缸下到位NG");
-                                        fx5u.SetM("M2528", true);
+                                        fx5u.SetM("M2538", true);
                                         break;
                                     case "4"://气缸上到位NG
                                         AddMessage("B气缸上到位NG");
-                                        fx5u.SetM("M2529", true);
+                                        fx5u.SetM("M2539", true);
                                         break;
                                     case "5"://光纤叠料
                                         AddMessage("B光纤叠料");
-                                        fx5u.SetM("M2530", true);
+                                        fx5u.SetM("M2540", true);
                                         break;
                                     case "6"://上位料掉料
                                         AddMessage("B上位料掉料");
-                                        fx5u.SetM("M2531", true);
+                                        fx5u.SetM("M2541", true);
                                         break;
                                     default:
                                         break;
@@ -525,7 +532,7 @@ namespace SZRFUI.ViewModels
                 case "0":
                     if (StatusRobot && EpsonStatusReady && !EpsonStatusEStop)
                     {
-                        await epsonRC90.CtrlNet.SendAsync("$start,2");
+                        await epsonRC90.CtrlNet.SendAsync("$start,0");
                     }
                     break;
                 case "1":
@@ -594,6 +601,7 @@ namespace SZRFUI.ViewModels
             Task.Run(()=> { PLCRun(); });
             tcpServer.StartTCPListen();
             UIRun();
+            
             #region 加载报警记录
             try
             {
@@ -669,7 +677,7 @@ namespace SZRFUI.ViewModels
                             epsonRC90.Rc90Out[i] = M2300[i];
                         }
                         fx5u.SetMultiM("M2200", epsonRC90.Rc90In);
-                        System.Threading.Thread.Sleep(20);
+                        System.Threading.Thread.Sleep(100);
                     }
                     else
                     {
@@ -785,6 +793,45 @@ namespace SZRFUI.ViewModels
             }
             while (true)
             {
+                #region PLC后台操作机械手
+
+                try
+                {
+                    bool[] M420 = await Task.Run<bool[]>(() => { return fx5u.ReadMultiM("M420", 4); });
+                    if (M420 != null && StatusRobot)
+                    {
+                        if (M420[0])
+                        {
+                            await epsonRC90.CtrlNet.SendAsync("$start,0");
+                            //AddMessage("$start,0");
+                        }
+                        if (M420[1])
+                        {
+                            await epsonRC90.CtrlNet.SendAsync("$pause");
+                            //AddMessage("$pause");
+                        }
+                        if (M420[2])
+                        {
+                            await epsonRC90.CtrlNet.SendAsync("$continue");
+                            //AddMessage("$continue");
+                        }
+                        if (M420[3])
+                        {
+                            await epsonRC90.CtrlNet.SendAsync("$stop");
+                            //AddMessage("$stop");
+                            await Task.Delay(300);
+                            await epsonRC90.CtrlNet.SendAsync("$SetMotorOff,1");
+                            //AddMessage("$SetMotorOff,1");
+                            await Task.Delay(400);
+                            await epsonRC90.CtrlNet.SendAsync("$reset");
+                            //AddMessage("$reset");
+                        }
+                    }
+
+
+                }
+                catch { }
+                #endregion
                 #region 报警记录
                 try
                 {

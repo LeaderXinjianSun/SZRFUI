@@ -35,8 +35,8 @@ namespace SZRFUI.Models
         {
             IOReceiveNet = new TcpIpClient();
             CtrlNet = new TcpIpClient();
-            Rc90In = new bool[50];
-            Rc90Out = new bool[50];
+            Rc90In = new bool[100];
+            Rc90Out = new bool[100];
             IP = ip;
             PORT = port;
         }
@@ -96,14 +96,14 @@ namespace SZRFUI.Models
                         else
                         {
                             string[] strs = s.Split(',');
-                            if (strs[0] == "IOCMD" && strs[1].Length == 50)
+                            if (strs[0] == "IOCMD" && strs[1].Length == 100)
                             {
-                                for (int i = 0; i < 50; i++)
+                                for (int i = 0; i < 100; i++)
                                 {
                                     Rc90In[i] = strs[1][i] == '1' ? true : false;
                                 }
                                 string RsedStr = "";
-                                for (int i = 0; i < 50; i++)
+                                for (int i = 0; i < 100; i++)
                                 {
                                     RsedStr += Rc90Out[i] ? "1" : "0";
                                 }
@@ -161,26 +161,31 @@ namespace SZRFUI.Models
             string status = "";
             while (true)
             {
-                if (isLogined == true)
-                {
-                    try
+                await Task.Run(async ()=> {
+                    if (isLogined == true)
                     {
-                        status = await CtrlNet.SendAndReceive("$getstatus");
-                        string[] statuss = status.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                        if (statuss[0] == "#getstatus")
+                        try
                         {
-                            if (statuss[1].Length == 11)
+                            status = await CtrlNet.SendAndReceive("$getstatus");
+                            string[] statuss = status.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                            if (statuss[0] == "#getstatus")
                             {
-                                EpsonStatusUpdate(null, statuss[1]);
+                                if (statuss[1].Length == 11)
+                                {
+
+                                    EpsonStatusUpdate(null, statuss[1]);
+                                }
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            //Log.Default.Error("EpsonRC90.GetStatus", ex.Message);
+                            await Task.Delay(1000);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        //Log.Default.Error("EpsonRC90.GetStatus", ex.Message);
-                    }
-                }
-                await Task.Delay(1000);
+                    //await Task.Delay(10);
+                });
+                
             }
         }
     }
