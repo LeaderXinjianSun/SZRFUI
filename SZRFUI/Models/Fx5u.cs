@@ -69,7 +69,8 @@ namespace SZRFUI.Models
             }
             if (read.Content.Length >= 2)
             {
-                return (read.Content[1] << 8) + read.Content[0];
+                string HexValue = read.Content[1].ToString("X2") + read.Content[0].ToString("X2");
+                return Convert.ToInt16(HexValue, 16);
             }
             else
             {

@@ -43,7 +43,7 @@ namespace SZRFUI.Models
         /// <param name="value"></param>
         void WriteMultW(string address, int[] value);
         /// <summary>
-        /// 读单字
+        /// 读双字
         /// </summary>
         /// <param name="address"></param>
         /// <returns></returns>

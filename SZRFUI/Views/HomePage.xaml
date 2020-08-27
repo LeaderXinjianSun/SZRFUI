@@ -22,22 +22,33 @@
             </Grid.Background>
         </Grid>
         <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Margin="10" Command="{Binding FuncCommand}">
-                <iconPacks:PackIconModern Width="42"
-                                  Height="42"
-                                  Kind="Tools" />
-            </Button>
+            <GroupBox Header="大数据">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                        <TextBlock VerticalAlignment="Center" Text="测试工站" Width="80"></TextBlock>
+                        <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding TestStation}"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                        <TextBlock VerticalAlignment="Center" Text="机台编号" Width="80"></TextBlock>
+                        <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding MachineNumber}"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                        <TextBlock VerticalAlignment="Center" Text="厂商代码" Width="80"></TextBlock>
+                        <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding Supplier}"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                        <TextBlock VerticalAlignment="Center" Text="料号" Width="80"></TextBlock>
+                        <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding ProgramName}"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                        <TextBlock VerticalAlignment="Center" Text="报警代码版本" Width="80"></TextBlock>
+                        <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding WARNVER}"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,50,5,0">
+                        <Button Content="{Binding BigDataPeramEdit}" Width="60" Height="30" Command="{Binding BigDataPeramEditCommand}"></Button>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
         </Grid>
         <TextBox Grid.Row="1" VerticalAlignment="Stretch" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" Margin="1" x:Name="MsgTextBox" IsReadOnly="True" TextChanged="MsgTextBox_TextChanged"  FontSize="14" Background="Black" FontFamily="宋体" Foreground="White" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding MessageStr}"></TextBox>
     </Grid>
